@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <arpa/inet.h>
+#include <arpa/inet.h>		// htons(), htonl()
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
