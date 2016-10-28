@@ -12,15 +12,15 @@ int socket_create(int port)
 	struct sockaddr_in sock_addr;
 
 	// create new socket
-	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {		// AF_INET = Address Family
 		perror("socket() error"); 
 		return -1; 
 	}
 
 	// set local address info
 	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(port);
-	sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);		
+	sock_addr.sin_port = htons(port);				// host to unsigned short
+	sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);			// host to unsigned long, INADDR_ANY = 0.0.0.0
 
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
 		close(sockfd);
