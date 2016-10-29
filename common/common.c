@@ -7,40 +7,43 @@
  */
 int socket_create(int port)
 {
-	int sockfd;
+	int sockfd;         // socket file descriptor
 	int yes = 1;
 	struct sockaddr_in sock_addr;
 
 	// create new socket
-	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {		// AF_INET = Address Family
-		perror("socket() error"); 
-		return -1; 
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    // AF_INET = Address Family
+    // SOCK_STREAM is based on TCP for data transferring, SOCK_DGRAM is based on UDP for broadcasting in LAN
+		perror("socket() error");
+		return -1;
 	}
 
 	// set local address info
 	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(port);				// host to unsigned short
-	sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);			// host to unsigned long, INADDR_ANY = 0.0.0.0
+	sock_addr.sin_port = htons(port);				// host to network short
+	sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);			// host to network long, INADDR_ANY = 0.0.0.0
 
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
 		close(sockfd);
 		perror("setsockopt() error");
-		return -1; 
+		return -1;
 	}
 
 	// bind
 	if (bind(sockfd, (struct sockaddr *) &sock_addr, sizeof(sock_addr)) < 0) {
 		close(sockfd);
-		perror("bind() error"); 
-		return -1; 
+		perror("bind() error");
+		return -1;
 	}
-   
+
 	// begin listening for incoming TCP requests
 	if (listen(sockfd, 5) < 0) {
+    // It can process at most 5 requests at one time
 		close(sockfd);
 		perror("listen() error");
 		return -1;
-	}              
+	}
 	return sockfd;
 }
 
@@ -60,10 +63,10 @@ int socket_accept(int sock_listen)
 
 	// Wait for incoming request, store client info in client_addr
 	sockfd = accept(sock_listen, (struct sockaddr *) &client_addr, &len);
-	
+
 	if (sockfd < 0) {
-		perror("accept() error"); 
-		return -1; 
+		perror("accept() error");
+		return -1;
 	}
 	return sockfd;
 }
@@ -77,11 +80,11 @@ int socket_accept(int sock_listen)
  */
 int socket_connect(int port, char*host)
 {
-	int sockfd;  					
+	int sockfd;
 	struct sockaddr_in dest_addr;
 
 	// create socket
-	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) { 
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         	perror("error creating socket");
         	return -1;
     }
@@ -96,7 +99,7 @@ int socket_connect(int port, char*host)
 	if(connect(sockfd, (struct sockaddr *)&dest_addr, sizeof(dest_addr)) < 0 ) {
         	perror("error connecting to server");
 		return -1;
-    	}    
+    	}
 	return sockfd;
 }
 
@@ -104,13 +107,13 @@ int socket_connect(int port, char*host)
 
 /**
  * Receive data on sockfd
- * Returns -1 on error, number of bytes received 
+ * Returns -1 on error, number of bytes received
  * on success
  */
 int recv_data(int sockfd, char* buf, int bufsize){
 	size_t num_bytes;
 	memset(buf, 0, bufsize);
-	num_bytes = recv(sockfd, buf, bufsize, 0);
+	num_bytes = recv(sockfd, buf, bufsize, 0);      // 0 is a flag
 	if (num_bytes < 0) {
 		return -1;
 	}
@@ -135,7 +138,7 @@ void trimstr(char *str, int n)
 
 
 /**
- * Send resposne code on sockfd
+ * Send response code on sockfd
  * Returns -1 on error, 0 on success
  */
 int send_response(int sockfd, int rc)
@@ -151,7 +154,7 @@ int send_response(int sockfd, int rc)
 
 
 
-/** 
+/**
  * Read input from command line
  */
 void read_input(char* buffer, int size)

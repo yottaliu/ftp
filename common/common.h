@@ -1,20 +1,20 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <arpa/inet.h>		// htons(), htonl()
+#include <arpa/inet.h>		// htons(), htonl(), inet_addr()
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>		// getaddrinfo()
-#include <netinet/in.h>
+#include <netinet/in.h>     // sockaddr_in
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
-#include <sys/socket.h>		// setsockopt()
+#include <sys/socket.h>		// socket(), setsockopt(), bind(), listen(), accept(), connect(), recv(), socklen_t
 #include <sys/types.h>		// setsockopt()
-#include <unistd.h>
+#include <unistd.h>         // close()
 
 
 
@@ -57,7 +57,7 @@ int socket_connect(int port, char *host);
 
 /**
  * Receive data on sockfd
- * Returns -1 on error, number of bytes received 
+ * Returns -1 on error, number of bytes received
  * on success
  */
 int recv_data(int sockfd, char* buf, int bufsize);
@@ -81,7 +81,7 @@ void trimstr(char *str, int n);
 
 
 
-/** 
+/**
  * Read input from command line
  */
 void read_input(char* buffer, int size);
